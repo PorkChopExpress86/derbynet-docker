@@ -36,6 +36,12 @@ This README contains more detailed guidance (Tailscale, LAN, firewall notes) bel
 
 This guide removes the containerized Tailscale instructions and focuses on the recommended Windows setup: run DerbyNet in Docker Desktop and run Tailscale natively on the Windows host. Other machines on the same Tailnet will be able to reach DerbyNet using the host's Tailscale IP.
 
+Note about security and exposed ports
+
+- DerbyNet exposes an HTTP port (default 8050) from the container to the host. If your host is only accessible on a private LAN or via Tailscale/VPN, this is usually low risk for local event use.
+- If the host will be reachable from untrusted networks (public Internet), change the role passwords in `.env` to strong values and consider additional protections (firewall rules, VPN-only access, or placing the service behind a reverse proxy with authentication).
+- You can limit exposure by adding a Windows firewall rule that allows access only from your LAN subnet (see the `Router / firewall steps` section), or by using Tailscale to avoid exposing the port to the public internet.
+
 Files in this folder:
 
 - `docker-compose.yml` — runs the DerbyNet container (service: `derbynet`).
@@ -63,14 +69,17 @@ Step-by-step (Windows host)
    ```powershell
    cd C:\Derbynet
    # If you don't have a .env yet, copy the example. This will be a no-op if .env already exists.
-   Copy-Item .env.example .env -ErrorAction SilentlyContinue
+      Copy-Item .env.example .env -ErrorAction SilentlyContinue
 
-   # Edit .env to set TIMER_PASSWORD, PHOTO_PASSWORD, DATA_DIR, and (optionally) HTTP_PORT
-   notepad .env
+       # Edit .env to set TIMER_PASSWORD, PHOTO_PASSWORD, DATA_DIR, and (optionally) HTTP_PORT
+       notepad .env
 
-   # Use the helper script to start the stack (this script will create .env from .env.example if missing,
-   # run `docker compose up -d`, show the containers and open the site in your browser):
-   .\start-derbynet.ps1
+       # Use the helper script to start the stack. Note: `start-derbynet.ps1` will automatically copy
+       # `.env.example` to `.env` if `.env` does not exist, run `docker compose up -d`, show the containers
+       # and open the site in your browser. Because of that behavior, an additional interactive
+       # `make-env.ps1` helper is optional — it can make initial values easier to type, but is not
+       # strictly required.
+       .\start-derbynet.ps1
    ```
 
    - Confirm the container is running and inspect logs if needed:
