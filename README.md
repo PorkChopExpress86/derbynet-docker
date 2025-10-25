@@ -2,7 +2,7 @@
 
 Quickstart (TL;DR)
 
-Follow these 4 steps on a Windows machine that will host DerbyNet (install Docker Desktop first):
+Follow these steps on a Windows machine that will host DerbyNet (install Docker Desktop first):
 
 1) Open PowerShell and verify Docker is available:
 
@@ -32,6 +32,36 @@ docker compose ps
 docker compose logs --tail 200 derbynet
 ```
 
+**macOS / Linux quickstart**
+
+1) Verify Docker Engine and Docker Compose are available from your terminal:
+
+   ```bash
+   docker --version
+   docker compose version
+   ```
+
+2) Prepare the repository and `.env` file (copy the example if needed and edit your passwords/paths):
+
+   ```bash
+   cd ~/derbynet
+   cp -n .env.example .env
+   ${EDITOR:-nano} .env   # set TIMER_PASSWORD, PHOTO_PASSWORD, DATA_DIR (and HTTP_PORT for a non-default port)
+   ```
+
+3) Start DerbyNet using the helper script (runs `docker compose up -d`, shows status, and opens the site when possible):
+
+   ```bash
+   ./start-derbynet.sh
+   ```
+
+4) Confirm DerbyNet is running and inspect logs if needed:
+
+   ```bash
+   docker compose ps
+   docker compose logs --tail 200 derbynet
+   ```
+
 This README contains more detailed guidance (Tailscale, LAN, firewall notes) below.
 
 This guide removes the containerized Tailscale instructions and focuses on the recommended Windows setup: run DerbyNet in Docker Desktop and run Tailscale natively on the Windows host. Other machines on the same Tailnet will be able to reach DerbyNet using the host's Tailscale IP.
@@ -46,12 +76,13 @@ Files in this folder:
 
 - `docker-compose.yml` — runs the DerbyNet container (service: `derbynet`).
 - `.env.example` — copy to `.env` and edit passwords/ports/data dir.
-- `start-derbynet.ps1` — helper script to copy `.env.example` to `.env` (if missing), start the compose stack, show status, and open the local URL.
+- `start-derbynet.ps1` — helper script for Windows to copy `.env.example` to `.env` (if missing), start the compose stack, show status, and open the local URL.
+- `start-derbynet.sh` — helper script for macOS and Linux with the same behaviour as the Windows helper.
 
 Prerequisites
 
-- Docker Desktop for Windows (required). Make sure Docker Desktop is installed, running, and you can use the `docker` and `docker compose` commands from PowerShell. If you don't have Docker Desktop, download and install it from https://www.docker.com/products/docker-desktop.
-- Tailscale desktop app for Windows (download from https://tailscale.com/download).
+- Docker with the Compose plugin on the host machine. On Windows and macOS this typically means Docker Desktop. On Linux install Docker Engine and the Compose plugin/package from your distribution. Verify `docker` and `docker compose` commands work from your shell of choice.
+- Tailscale client on the host (Windows/macOS app or the Linux package/CLI) so other Tailnet devices can reach DerbyNet over the private network.
 
 Step-by-step (Windows host)
 
