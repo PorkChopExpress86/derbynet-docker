@@ -1,5 +1,39 @@
 ## DerbyNet with Docker on Windows + Tailscale (recommended)
 
+Quickstart (TL;DR)
+
+Follow these 4 steps on a Windows machine that will host DerbyNet (install Docker Desktop first):
+
+1) Open PowerShell and verify Docker is available:
+
+```powershell
+docker version
+docker compose version
+```
+
+2) Prepare the repository and `.env`:
+
+```powershell
+cd C:\Derbynet
+Copy-Item .env.example .env -ErrorAction SilentlyContinue
+notepad .env   # set TIMER_PASSWORD, PHOTO_PASSWORD, DATA_DIR (and HTTP_PORT if you want a non-default port)
+```
+
+3) Start DerbyNet using the helper script (this runs `docker compose up -d` and opens the site):
+
+```powershell
+.\start-derbynet.ps1
+```
+
+4) Confirm DerbyNet is running and watch logs if needed:
+
+```powershell
+docker compose ps
+docker compose logs --tail 200 derbynet
+```
+
+This README contains more detailed guidance (Tailscale, LAN, firewall notes) below.
+
 This guide removes the containerized Tailscale instructions and focuses on the recommended Windows setup: run DerbyNet in Docker Desktop and run Tailscale natively on the Windows host. Other machines on the same Tailnet will be able to reach DerbyNet using the host's Tailscale IP.
 
 Files in this folder:
