@@ -1,0 +1,22 @@
+services:
+  derbynet:
+    image: "${DERBYNET_IMAGE:-jeffpiazza/derbynet_server:latest}"
+    container_name: derbynet_container
+    ports:
+      - "${HTTP_PORT:-8050}:80"
+      - "${HTTPS_PORT:-8051}:443"
+    environment:
+      - TIMER_PASSWORD=${TIMER_PASSWORD:-}
+      - RACE_CREW_PASSWORD=${RACE_CREW_PASSWORD:-murphy}
+      - RACE_COORD_PASSWORD=${RACE_COORD_PASSWORD:-doyourbest}
+      - PHOTO_PASSWORD=${PHOTO_PASSWORD:-flashbulb}
+      - UMASK=${UMASK:-000}
+      - PUID=${PUID:-0}
+      - PGID=${PGID:-0}
+    volumes:
+      - "${DATA_DIR:-./data}:/var/lib/derbynet"
+      - "/etc/localtime:/etc/localtime:ro"
+    restart: unless-stopped
+
+
+

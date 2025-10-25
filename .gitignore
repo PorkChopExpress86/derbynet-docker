@@ -1,0 +1,9 @@
+.env
+# Ignore everything in the data folder except the directory itself
+/data/*
+!/data/.gitkeep
+
+# Ignore common OS and editor files
+.vscode/
+Thumbs.db
+.DS_Store
